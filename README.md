@@ -44,13 +44,13 @@ deactivate
 
 ## standard usage with existing params.R-file
 
-**1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:** 
-**2. Rscript ~/path/to/your/params.R**
-**3. Copy ALL files from source to target, using the software of your choice.**
-**4. Rscript ~/path/to/target/01_metadata.R**
-**5. source ~/path/to/your/BirdNET-Analyzer/installation/.venv/bin/activate**
-**6. source ~/path/to/target/02_birdnet.py**
-**7. Rscript ~/path/to/target/03_visualize_birdnet.R**
+**1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:**   
+**2. Rscript ~/path/to/your/params.R**  
+**3. Copy ALL files from source to target, using the software of your choice.**  
+**4. Rscript ~/path/to/target/01_metadata.R**  
+**5. source ~/path/to/your/BirdNET-Analyzer/installation/.venv/bin/activate**  
+**6. source ~/path/to/target/02_birdnet.py**  
+**7. Rscript ~/path/to/target/03_visualize_birdnet.R**  
 
 >> Note: The command Rscript is meant to run scripts directly from command line without opening R. Check proper installation via 'Rscript --version'. Depending on the operating system, it might be necessary to add Rscript to your PATH when using it for the first time.
 
