@@ -79,7 +79,7 @@ pamworkflow::config2df(filepath.config = file.path(params$filepath.source, "CONF
 ########################## Write predefined scripts. ##########################
 ################################################################################
 
-text_01metadata <- paste0("foo <- utils::read.csv('", file.path(params$filepath.processing, "params.csv')"),
+text_01metadata <- paste0("foo <- utils::read.csv('", file.path(params$filepath.metadata, "params.csv')"),
                           "\n\n",
                           "pamworkflow::get_metadata(filepath.source = foo$filepath.original, filepath.target = foo$filepath.metadata)",
                           "\n\n",
