@@ -1,9 +1,13 @@
 # Installation
 
 ## R 
-### guano
+### guano (precondition)
 
 **if you don´t have the guano package installed, see**   https://github.com/riggsd/guano-r
+
+### this package
+
+devtools::install_github('sachserf/pamworkflow')
 
 ## Python 3.11
 ### BirdNET
@@ -14,13 +18,13 @@
 
 **Summary of installation instructions with command line:**  
 
-git clone https://github.com/birdnet-team/BirdNET-Analyzer.git
-cd BirdNET-Analyzer
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install .
-pip install keras_tuner
-deactivate
+git clone https://github.com/birdnet-team/BirdNET-Analyzer.git  
+cd BirdNET-Analyzer  
+python3.11 -m venv .venv  
+source .venv/bin/activate  
+pip install .  
+pip install keras_tuner  
+deactivate  
 
 # usage
 
@@ -38,7 +42,8 @@ deactivate
 ## first invocation after installation
 
 **Copy the file *params.R* to a destination of your choice. You could reuse this file at any time. If you deleted it, just copy it with the following command from within R:**  
-# file.copy(from = system.file('params.R', package = 'SOBIO018'), to = '~/path/to/target/params.R')
+
+>> file.copy(from = system.file('params.R', package = 'pamworkflow'), to = '~/path/to/target/params.R')
 
 **The whole workflow is based on scripts, executed via command line (e.g. bash, Powershell, etc.) and you don´t need to run an R or python session. Therefore, after copying the params.R-file: Exit R.**
 
