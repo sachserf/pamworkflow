@@ -4,10 +4,12 @@
 \alias{visualize_metadata}
 \title{Plot predefined figures of metadata}
 \usage{
-visualize_metadata(filepath.metadata)
+visualize_metadata(filepath.metadata.csv, dirname.target.figures)
 }
 \arguments{
-\item{filepath.metadata}{Character. Specify file path to csv containing GUANO metadata.}
+\item{filepath.metadata.csv}{Character. Specify file path to csv containing GUANO metadata.}
+
+\item{dirname.target.figures}{Character. Specify file path to to the target directory for the figures.}
 }
 \description{
 Plot predefined figures of metadata

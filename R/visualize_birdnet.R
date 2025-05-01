@@ -1,10 +1,11 @@
 #' Write predefined plots from BirdNET selection table
 #'
 #' @param BirdNET_selection_table Character. Specify full file path to a BeridNET selection table (Raven compatible format).
+#' @param dirname.target.figures Character. Specify file path to to the target directory for the figures.
 #'
 #' @importFrom magrittr %>%
 #' @export
-visualize_birdnet <- function(BirdNET_selection_table) {
+visualize_birdnet <- function(BirdNET_selection_table, dirname.target.figures) {
 
 df <- rio::import(BirdNET_selection_table)   #### substitude with base function?!
 
@@ -32,7 +33,7 @@ fig1 <- df %>%
   ggplot2::theme_minimal() +
   ggplot2::theme(panel.grid.minor = ggplot2::element_blank())
 
-ggplot2::ggsave(fig1, filename = file.path(dirname(BirdNET_selection_table), paste0(basename(dirname(BirdNET_selection_table)), "figures"), "speciesBins.png"), height = 13)
+ggplot2::ggsave(fig1, filename = file.path(dirname.target.figures, "speciesBins.png"), height = 13)
 
 fig2 <- df %>%
   ggplot2::ggplot() +
@@ -42,5 +43,5 @@ fig2 <- df %>%
   ggplot2::theme_minimal() +
   ggplot2::theme(panel.grid.minor = ggplot2::element_blank())
 
-ggplot2::ggsave(fig2, filename = file.path(dirname(BirdNET_selection_table), paste0(basename(dirname(BirdNET_selection_table)), "figures"), "speciesConfidence.png"), height = 13)
+ggplot2::ggsave(fig2, filename = file.path(dirname.target.figures, "speciesConfidence.png"), height = 13)
 }

@@ -81,9 +81,9 @@ pamworkflow::config2df(filepath.config = file.path(params$filepath.source, "CONF
 
 text_01metadata <- paste0("foo <- utils::read.csv('", file.path(params$filepath.metadata, "params.csv')"),
                           "\n\n",
-                          "pamworkflow::get_metadata(filepath.source = foo$filepath.original, filepath.target = foo$filepath.metadata)",
+                          "pamworkflow::get_metadata(filepath.source = foo$filepath.original, filepath.target = file.path(foo$filepath.metadata, 'dfmeta.csv'))",
                           "\n\n",
-                          "pamworkflow::visualize_metadata(filepath.metadata = foo$filepath.metadata)")
+                          "pamworkflow::visualize_metadata(filepath.metadata.csv = file.path(foo$filepath.metadata, 'dfmeta.csv'), dirname.target.figures = foo$filepath.figures)")
 writeLines(text = text_01metadata, con = file.path(params$filepath.processing, "01_metadata.R"))
 
 ### copy speciesList
@@ -99,8 +99,14 @@ writeLines(birdnet_call, con = file.path(filepath.processing, "02_birdnet.py"))
 ### visualize BirdNET
 text_03_visualize_birdnet <- paste0("foo <- utils::read.csv('", file.path(params$filepath.metadata, "params.csv')"),
                           "\n\n",
-                          "pamworkflow::visualize_birdnet(BirdNET_selection_table = file.path(foo$filepath.birdnet, 'BirdNET_SelectionTable.txt'))")
+                          "pamworkflow::visualize_birdnet(BirdNET_selection_table = file.path(foo$filepath.birdnet, 'BirdNET_SelectionTable.txt'), dirname.target.figures = foo$filepath.figures)")
 writeLines(text = text_03_visualize_birdnet, con = file.path(filepath.processing, "03_visualize_birdnet.R"))
+
+################################################################################
+################################ write logfile ################################
+################################################################################
+
+pamworkflow::write_log(filepath.logfile, filepath.source, filepath.target)
 
 ################################################################################
 ############################## write instructions ##############################
@@ -127,3 +133,4 @@ message(
     "\n---------------------------------------------------------"
   )
 )
+

@@ -4,10 +4,12 @@
 \alias{visualize_birdnet}
 \title{Write predefined plots from BirdNET selection table}
 \usage{
-visualize_birdnet(BirdNET_selection_table)
+visualize_birdnet(BirdNET_selection_table, dirname.target.figures)
 }
 \arguments{
 \item{BirdNET_selection_table}{Character. Specify full file path to a BeridNET selection table (Raven compatible format).}
+
+\item{dirname.target.figures}{Character. Specify file path to to the target directory for the figures.}
 }
 \description{
 Write predefined plots from BirdNET selection table
