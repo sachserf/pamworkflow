@@ -5,7 +5,7 @@
 \title{Clip and concatenate WAV-files and selection tables}
 \usage{
 clipcat_birdnet_data(
-  input_file,
+  selection_table,
   output_dir,
   target_species,
   n_samples = 100,
@@ -18,7 +18,7 @@ clipcat_birdnet_data(
 )
 }
 \arguments{
-\item{input_file}{Character. File path to a BirdNET-selection-table.TXT.}
+\item{selection_table}{Character. File path to a BirdNET-selection-table.TXT.}
 
 \item{output_dir}{Character. Directory for the output.}
 

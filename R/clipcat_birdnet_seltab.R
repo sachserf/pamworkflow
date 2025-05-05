@@ -1,6 +1,6 @@
 #' Clip and concatenate WAV-files and selection tables
 #'
-#' @param input_file Character. File path to a BirdNET-selection-table.TXT.
+#' @param selection_table Character. File path to a BirdNET-selection-table.TXT.
 #' @param output_dir Character. Directory for the output.
 #' @param n_samples Integer. Number of samples per bin and BirdNET class (Species).
 #' @param confidence_threshold Numeric. Minimum confidence threshold of the samples.
@@ -13,10 +13,10 @@
 #'
 #' @importFrom magrittr %>%
 #' @export
-clipcat_birdnet_data <- function(input_file, output_dir, target_species, n_samples = 100, confidence_threshold = 0.6, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, seed = 2354, dur_silence = 0.5) {
+clipcat_birdnet_data <- function(selection_table, output_dir, target_species, n_samples = 100, confidence_threshold = 0.6, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, seed = 2354, dur_silence = 0.5) {
 
   # Load data
-  df <- rio::import(input_file)
+  df <- rio::import(selection_table)
 
   # Add bins and row identifier
   df <- df %>%
@@ -97,8 +97,8 @@ clipcat_birdnet_data <- function(input_file, output_dir, target_species, n_sampl
       `Begin Time (s)` = snippet_start + cumsum(lagdur),
       `End Time (s)` = `Begin Time (s)` + birdnet_clip_length
     ) %>%
-    select(-lagdur) %>%
-    ungroup()
+    dplyr::select(-lagdur) %>%
+    dplyr::ungroup()
 
   # Write selection tables for each group
   loopi <- dfsel %>%
