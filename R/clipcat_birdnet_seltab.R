@@ -69,7 +69,7 @@ clipcat_birdnet_data <- function(selection_table, output_dir, target_species, n_
     warning("At least one source file does not exist!")
     return(NULL)
   } else {
-    message("All source files exist - continuing processing.")
+    message("All source files exist - continuing process.")
   }
 
 
@@ -119,5 +119,5 @@ clipcat_birdnet_data <- function(selection_table, output_dir, target_species, n_
     system(i)
   }
 
-  message("Processing complete!")
+  message("Process completed!")
 }
