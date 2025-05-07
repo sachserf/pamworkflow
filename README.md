@@ -18,6 +18,8 @@ devtools::install_github('sachserf/pamworkflow')
 
 **Summary of installation instructions with command line:**  
 
+#### Linux
+
 git clone https://github.com/birdnet-team/BirdNET-Analyzer.git  
 cd BirdNET-Analyzer  
 python3.11 -m venv .venv  
@@ -25,6 +27,16 @@ source .venv/bin/activate
 pip install .  
 pip install keras_tuner  
 deactivate  
+
+#### Windows
+
+git clone https://github.com/birdnet-team/BirdNET-Analyzer.git  
+cd BirdNET-Analyzer  
+python.exe -m venv .venv
+. .\.venv\Scripts\activate
+pip install .  
+pip install keras_tuner
+deactivate
 
 # usage
 
