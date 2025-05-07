@@ -32,11 +32,11 @@ deactivate
 
 git clone https://github.com/birdnet-team/BirdNET-Analyzer.git  
 cd BirdNET-Analyzer  
-python.exe -m venv .venv
-. .\.venv\Scripts\activate
+python -m venv .venv  
+. .\.venv\Scripts\activate  
 pip install .  
-pip install keras_tuner
-deactivate
+pip install keras_tuner  
+deactivate  
 
 # usage
 
