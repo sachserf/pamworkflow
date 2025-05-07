@@ -4,14 +4,12 @@
 \alias{write_log}
 \title{Write a log file of the specified parameters}
 \usage{
-write_log(filepath.logfile = NULL, filepath.source, filepath.target)
+write_log(params, filepath.logfile = NULL)
 }
 \arguments{
+\item{params}{Object of class data.frame. A data frame containing information about specified parameters.}
+
 \item{filepath.logfile}{Character. Specify file path to a log file. A new file will be written, if missing.}
-
-\item{filepath.source}{Character. Specify the variable filepath.source.}
-
-\item{filepath.target}{Character. Specify the variable filepath.target.}
 }
 \description{
 Write a log file of the specified parameters

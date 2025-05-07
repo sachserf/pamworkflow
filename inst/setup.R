@@ -49,21 +49,22 @@ filepath.processing <- pamworkflow::create_dirs(
 ################################ define params ################################
 ################################################################################
 
+filepath.instructions <- file.path(dirname(filepath.original), "instructions.txt")
+
 params <- tibble::tibble(
   filepath.target = filepath.target,
   filepath.source = filepath.source,
   first.rec = as.integer(recording.duration[1]),
   last.rec =  as.integer(recording.duration[2]),
-  DEIMS.ID = NA,
+  filepath.original = filepath.original,
+  filepath.metadata = filepath.metadata,
+  filepath.figures = filepath.figures,
+  filepath.birdnet = filepath.birdnet,
+  filepath.processing = filepath.processing,
+  filepath.specieslist = file.path(filepath.metadata, "specieslist.txt"),
+  filepath.instructions = filepath.instructions,
   COMMENT = NA
 )
-
-params$filepath.original <- filepath.original
-params$filepath.metadata <- filepath.metadata
-params$filepath.figures <- filepath.figures
-params$filepath.birdnet <- filepath.birdnet
-params$filepath.processing <- filepath.processing
-params$filepath.specieslist <- file.path(filepath.metadata, "specieslist.txt")
 
 utils::write.csv(params, file.path(filepath.metadata, "params.csv"), row.names = FALSE)
 
@@ -106,7 +107,7 @@ writeLines(text = text_03_visualize_birdnet, con = file.path(filepath.processing
 ################################ write logfile ################################
 ################################################################################
 
-pamworkflow::write_log(filepath.logfile, filepath.source, filepath.target)
+pamworkflow::write_log(params, filepath.logfile)
 
 ################################################################################
 ############################## write instructions ##############################
@@ -120,14 +121,14 @@ instructions_text <- paste0("1. Edit the file params.R with any text editor and 
 6. source ", file.path(params$filepath.processing, '02_birdnet.py'), "
 7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'))
 
-writeLines(text = instructions_text, con = file.path(dirname(filepath.original), "instructions.txt"))
+writeLines(text = instructions_text, con = filepath.instructions)
 
 message(
   paste0(
     "\n\n**********Setup finished**********\n\n",
     "Now, follow the instructions below (start with step 3):",
     "\n(Instructions also written to: ",
-    file.path(dirname(params$filepath.original), 'instructions.txt'),"):",
+    filepath.instructions,"):",
     "\n\n---------------------------------------------------------\n",
     instructions_text,
     "\n---------------------------------------------------------"

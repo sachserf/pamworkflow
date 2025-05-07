@@ -71,3 +71,8 @@ deactivate
 
 >> Note: The command Rscript is meant to run scripts directly from command line without opening R. Check proper installation via 'Rscript --version'. Depending on the operating system, it might be necessary to add Rscript to your PATH when using it for the first time.
 
+## tipps for long term monitoring
+
+- If you plan to repeat a deployment multiple times at the same site, it might be convenient to save a params.R-file at the top-level directory of each site, so you don´t need to adjust the file path with every repeated deployment and simply run the params.R-file.  
+- If you want to combine the data of multiple deployments and devices/sites (e.g. for large-scale or long-term monitoring), make sure to specify a common file path to a logfile (variable 'filepath.logfile' in the params.R-file). You can use this log-file at any time to combine the results.
+
