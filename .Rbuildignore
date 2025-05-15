@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^deprecated$
+^exdata$
+^todo.md

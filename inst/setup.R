@@ -119,7 +119,10 @@ instructions_text <- paste0("1. Edit the file params.R with any text editor and 
 4. Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "
 5. source ~/path/to/your/BirdNET-Analyzer/installation/.venv/bin/activate
 6. source ", file.path(params$filepath.processing, '02_birdnet.py'), "
-7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'))
+7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'),"
+
+OneLiner after copying files:
+Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "; source ", file.path(params$filepath.processing, '02_birdnet.py'), "; Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'))
 
 writeLines(text = instructions_text, con = filepath.instructions)
 

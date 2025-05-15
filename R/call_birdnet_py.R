@@ -30,7 +30,7 @@ call_birdnet.py <- function(input, output, overlap = 2, threads = NULL, batch_si
   threads <- nthreads-1
   }
 
-  if(is.null(batch_size)) batch_size = threads * 3
+  if(is.null(batch_size)) batch_size = threads * 2
 
   birdnet <- paste0("python -m birdnet_analyzer.analyze ", input, " --output ", output, " --overlap ", overlap, " --threads ", threads, " --batch_size ", batch_size, " --sensitivity ", sensitivity, " --slist ", slist, " --locale ", locale, " --lat ", lat, " --lon ", lon, " --week ", week, " --min_conf ", min_conf, " --rtype ", rtype, " --fmin ", fmin, " --fmax ", fmax, " --audio_speed ", audio_speed, " --combine_results ", combine_results)
 
