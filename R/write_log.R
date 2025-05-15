@@ -6,8 +6,6 @@
 #' @export
 write_log <- function(params, filepath.logfile = NULL) {
 
-  params$timestamp <- Sys.time()
-
   if(is.null(filepath.logfile)) return(message("No log file specified."))
 
   if(file.exists(filepath.logfile)) {

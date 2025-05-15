@@ -52,6 +52,7 @@ filepath.processing <- pamworkflow::create_dirs(
 filepath.instructions <- file.path(dirname(filepath.original), "instructions.txt")
 
 params <- tibble::tibble(
+  timestamp = Sys.time(),
   filepath.target = filepath.target,
   filepath.source = filepath.source,
   first.rec = as.integer(recording.duration[1]),
@@ -63,10 +64,13 @@ params <- tibble::tibble(
   filepath.processing = filepath.processing,
   filepath.specieslist = file.path(filepath.metadata, "specieslist.txt"),
   filepath.instructions = filepath.instructions,
+  filepath.logfile = filepath.logfile,
+  filepath.params = file.path(filepath.metadata, "params.csv"),
+  processed.at = as.POSIXct(NA),
   COMMENT = NA
 )
 
-utils::write.csv(params, file.path(filepath.metadata, "params.csv"), row.names = FALSE)
+rio::export(params, file = params$filepath.params)
 
 ################################################################################
 ################################# write config #################################
@@ -95,13 +99,18 @@ file.copy(from = system.file("species_list.txt", package = "pamworkflow"),
 birdnet_call <- pamworkflow::call_birdnet.py(input = params$filepath.original,
                 output = params$filepath.birdnet,
                 slist = params$filepath.specieslist)
-writeLines(birdnet_call, con = file.path(filepath.processing, "02_birdnet.py"))
+writeLines(birdnet_call, con = file.path(params$filepath.processing, "02_birdnet.py"))
 
 ### visualize BirdNET
 text_03_visualize_birdnet <- paste0("foo <- utils::read.csv('", file.path(params$filepath.metadata, "params.csv')"),
                           "\n\n",
                           "pamworkflow::visualize_birdnet(BirdNET_selection_table = file.path(foo$filepath.birdnet, 'BirdNET_SelectionTable.txt'), dirname.target.figures = foo$filepath.figures)")
-writeLines(text = text_03_visualize_birdnet, con = file.path(filepath.processing, "03_visualize_birdnet.R"))
+writeLines(text = text_03_visualize_birdnet, con = file.path(params$filepath.processing, "03_visualize_birdnet.R"))
+
+### write update_logfile.R
+update_log <-  paste0("pamworkflow::update_logfile(filepath.params = '", params$filepath.params, "', filepath.logfile = '", params$filepath.logfile, "')")
+#update_log <- pamworkflow::update_logfile(filepath.params = params$filepath.params, filepath.logfile =  params$filepath.logfile)
+writeLines(update_log, con = file.path(params$filepath.processing, "04_update_log.R"))
 
 ################################################################################
 ################################ write logfile ################################
@@ -120,9 +129,10 @@ instructions_text <- paste0("1. Edit the file params.R with any text editor and 
 5. source ~/path/to/your/BirdNET-Analyzer/installation/.venv/bin/activate
 6. source ", file.path(params$filepath.processing, '02_birdnet.py'), "
 7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'),"
+8. Rscript ", file.path(params$filepath.processing, '04_update_log.R'),"
 
 OneLiner after copying files:
-Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "; source ", file.path(params$filepath.processing, '02_birdnet.py'), "; Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'))
+Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "; source ", file.path(params$filepath.processing, '02_birdnet.py'), "; Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'), "; Rscript ", file.path(params$filepath.processing, '04_update_log.R'))
 
 writeLines(text = instructions_text, con = filepath.instructions)
 
