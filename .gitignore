@@ -4,3 +4,5 @@
 .Ruserdata
 deprecated/
 exdata/
+logfile.csv
+pamparams.R
