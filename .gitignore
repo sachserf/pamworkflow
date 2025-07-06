@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 deprecated/
+testing/
 exdata/
 logfile.csv
 pamparams.R

@@ -2,6 +2,7 @@
 
 export(call_birdnet.py)
 export(clipcat_birdnet_data)
+export(combine_dataframes)
 export(config2df)
 export(create_dirs)
 export(get_metadata)

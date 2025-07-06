@@ -61,6 +61,7 @@ params <- tibble::tibble(
   filepath.metadata = filepath.metadata,
   filepath.figures = filepath.figures,
   filepath.birdnet = filepath.birdnet,
+  filepath.birdnet.selection.table = file.path(filepath.birdnet, "BirdNET_SelectionTable.txt"),
   filepath.processing = filepath.processing,
   filepath.specieslist = file.path(filepath.metadata, "specieslist.txt"),
   filepath.instructions = filepath.instructions,
@@ -69,8 +70,6 @@ params <- tibble::tibble(
   processed.at = as.POSIXct(NA),
   COMMENT = NA
 )
-
-rio::export(params, file = params$filepath.params)
 
 ################################################################################
 ################################# write config #################################
@@ -113,6 +112,31 @@ update_log <-  paste0("pamworkflow::update_logfile(filepath.params = '", params$
 writeLines(update_log, con = file.path(params$filepath.processing, "04_update_log.R"))
 
 ################################################################################
+############################# prepare instructions #############################
+################################################################################
+
+instructions_stepbystep <- paste0("1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:
+2. Rscript ~/path/to/your/params.R
+3. Copy ALL files from ", params$filepath.source, " to ", params$filepath.original, ", using the software of your choice.
+4. Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "
+5. ", birdnet_venv, "
+6. ", birdnet_call, "
+7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'),"
+8. Rscript ", file.path(params$filepath.processing, '04_update_log.R'))
+
+oneliner <- paste0("Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "; ", birdnet_venv, "; ", birdnet_call, "; Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'), "; Rscript ", file.path(params$filepath.processing, '04_update_log.R'))
+
+instructions_text <- paste(c(instructions_stepbystep, "OneLiner after copying files:", oneliner), collapse = ", ")
+
+params$processing_oneliner <- oneliner  ### add oneliner to logfile
+
+################################################################################
+################################# write params #################################
+################################################################################
+
+rio::export(params, file = params$filepath.params)
+
+################################################################################
 ################################ write logfile ################################
 ################################################################################
 
@@ -121,18 +145,6 @@ pamworkflow::write_log(params, filepath.logfile)
 ################################################################################
 ############################## write instructions ##############################
 ################################################################################
-
-instructions_text <- paste0("1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:
-2. Rscript ~/path/to/your/params.R
-3. Copy ALL files from ", params$filepath.source, " to ", params$filepath.original, ", using the software of your choice.
-4. Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "
-5. source ~/path/to/your/BirdNET-Analyzer/installation/.venv/bin/activate
-6. source ", file.path(params$filepath.processing, '02_birdnet.py'), "
-7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'),"
-8. Rscript ", file.path(params$filepath.processing, '04_update_log.R'),"
-
-OneLiner after copying files:
-Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "; source ", file.path(params$filepath.processing, '02_birdnet.py'), "; Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'), "; Rscript ", file.path(params$filepath.processing, '04_update_log.R'))
 
 writeLines(text = instructions_text, con = filepath.instructions)
 
@@ -143,7 +155,10 @@ message(
     "\n(Instructions also written to: ",
     filepath.instructions,"):",
     "\n\n---------------------------------------------------------\n",
-    instructions_text,
+    instructions_stepbystep,
+    "\n\n---------------------------------------------------------\n",
+    "OneLiner after copying files:\n",
+    oneliner,
     "\n---------------------------------------------------------"
   )
 )

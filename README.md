@@ -38,6 +38,10 @@ pip install .
 pip install keras_tuner  
 deactivate  
 
+### Prerequisites
+
+R, Rscript and python 3.11 should be included in PATH
+
 # usage
 
 ## summary of the general workflow
@@ -46,7 +50,7 @@ deactivate
 - The file params.R (see next chapter) contains the information needed to set up everything for the workflow. The location of the file is not associated to the workflow and can be anywhere on the system (Desktop, Downloads-folder, etc). When it has been sourced, it is not needed anymore. Either delete it or reuse it next time.
 - Running the script set up the workflow by writing directories and files at the target filepath specified in the params.R-file. 
 - Now copy ALL files from the source (e.g. micro-SD-card) to the target (directory ends with '_original') with the software of your choice (file manager, command line program, etc.). 
-- Go to the target directory and invoke the scripts in the predefined order: Use 'Rscript' or 'Source' - according to the file ending (more information below).
+- Go to the target directory and invoke the scripts in the predefined order or simply run the 'oneliner' 
     - The first script will extract metadata of your Audio-files using the GUANO metadata standard via the R-package 'guano'.
     - The second script will run BirdNET via python. In case you installed BirdNET within a dedicated environment (recommended), you need to enter the environment before invoking the script.
     - The third script is an optional R-Script to visualize the output of BirdNET.
@@ -61,18 +65,15 @@ deactivate
 
 ## standard usage with existing params.R-file
 
-**1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:**   
+**1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with step 2, which will prepare the directory structure and print instructions for further processing (see step 4):**
 **2. Rscript ~/path/to/your/params.R**  
 **3. Copy ALL files from source to target, using the software of your choice.**  
-**4. Rscript ~/path/to/target/01_metadata.R**  
-**5. source ~/path/to/your/BirdNET-Analyzer/installation/.venv/bin/activate**  
-**6. source ~/path/to/target/02_birdnet.py**  
-**7. Rscript ~/path/to/target/03_visualize_birdnet.R**  
+**4. Process Metadata, run Birdnet and visualize results by executing the instructions** 
 
 >> Note: The command Rscript is meant to run scripts directly from command line without opening R. Check proper installation via 'Rscript --version'. Depending on the operating system, it might be necessary to add Rscript to your PATH when using it for the first time.
 
 ## tipps for long term monitoring
 
 - If you plan to repeat a deployment multiple times at the same site, it might be convenient to save a params.R-file at the top-level directory of each site, so you don´t need to adjust the file path with every repeated deployment and simply run the params.R-file.  
-- If you want to combine the data of multiple deployments and devices/sites (e.g. for large-scale or long-term monitoring), make sure to specify a common file path to a logfile (variable 'filepath.logfile' in the params.R-file). You can use this log-file at any time to combine the results.
+- If you want to combine the data of multiple deployments and devices/sites (e.g. for large-scale or long-term monitoring), make sure to specify a common file path to a logfile (variable 'filepath.logfile' in the params.R-file). You can use this log-file at any time to combine the results. Optionally add columns with additional information to your log-file.
 
