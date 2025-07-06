@@ -20,7 +20,7 @@ update_logfile <- function(filepath.params, filepath.logfile) {
 
   row_id <- logfile %>%
     dplyr::mutate(row_id = dplyr::row_number()) %>%
-    dplyr::semi_join(params) %>%
+    dplyr::semi_join(params) %>%  ### , by = colnames(logfile)
     dplyr::pull(row_id)
 
   if (length(row_id == 1)) {
