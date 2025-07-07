@@ -1,0 +1,18 @@
+### start clean
+rm(list=ls());gc()
+
+### Character. Specify the path to your BirdNET installation and the command to enter the virtual environment of your birdnet installation (command depends on operating system)
+### Linux example: birdnet_venv <- "source ~/path/to/BirdNET-Analyzer/.venv/bin/activate"
+### Windows example: birdnet_venv <- "C:\path\to\BirdNET-Analyzer\.venv\Şcripts\activate"
+birdnet_venv <- "source ~/git/BirdNET-Analyzer/.venv/bin/activate"
+
+### Character. specify the full file path to the directory where the AudioMoth files are stored (e.g. the full path to the microSD card)
+filepath.source <- "/media/user/3830-3938"
+
+### Character. Specify the full file path to the target directory for further processing of the files. The last subdirectory should designate a unique (!) identifier for the location of the device that recorded the audio files.
+filepath.target <- "~/Downloads/kalkalpen_auerhuhn/r035"
+
+### Character. Optional. Specify the full file path to a tsv file (tab-separated file) to write a log. If you do not want to write a log file, use: filepath.logfile <- NULL
+filepath.logfile <- "~/Downloads/kalkalpen_auerhuhn/logfile.tsv"
+
+source(system.file("setup.R", package = "pamworkflow"))
