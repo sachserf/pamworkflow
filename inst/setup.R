@@ -1,5 +1,10 @@
 require("magrittr")
 
+### normalize paths
+filepath.source <- normalizePath(filepath.source, winslash = "/", mustWork = FALSE)
+filepath.target <- normalizePath(filepath.target, winslash = "/", mustWork = FALSE)
+filepath.logfile <- normalizePath(filepath.logfile, winslash = "/", mustWork = FALSE)
+
 ################################################################################
 ############################### get_rec_duration ###############################
 ################################################################################
@@ -71,6 +76,10 @@ params <- tibble::tibble(
   COMMENT = NA
 )
 
+if (!is.null(copycmd)) params$copycmd <- gsub(filepath.target, filepath.original, copycmd)
+
+if (file.exists(file.path(params$filepath.original, "CONFIG.TXT"))) stop("Abort: CONFIG.TXT already exists in target directory. Choose another target and retry.")
+
 ################################################################################
 ################################# write config #################################
 ################################################################################
@@ -95,9 +104,9 @@ file.copy(from = system.file("species_list.txt", package = "pamworkflow"),
           to = params$filepath.specieslist)
 
 ### write birdnet.py
-birdnet_call <- pamworkflow::call_birdnet.py(input = params$filepath.original,
-                output = params$filepath.birdnet,
-                slist = params$filepath.specieslist)
+birdnet_call <- pamworkflow::call_birdnet.py(input = shQuote(params$filepath.original),
+                output = shQuote(params$filepath.birdnet),
+                slist = shQuote(params$filepath.specieslist))
 writeLines(birdnet_call, con = file.path(params$filepath.processing, "02_birdnet.py"))
 
 ### visualize BirdNET
@@ -124,7 +133,28 @@ instructions_stepbystep <- paste0("1. Edit the file params.R with any text edito
 7. Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'),"
 8. Rscript ", file.path(params$filepath.processing, '04_update_log.R'))
 
-oneliner <- paste0("Rscript ", file.path(params$filepath.processing, '01_metadata.R'), "; ", birdnet_venv, "; ", birdnet_call, "; Rscript ", file.path(params$filepath.processing, '03_visualize_birdnet.R'), "; Rscript ", file.path(params$filepath.processing, '04_update_log.R'))
+if (is.null(copycmd)) {
+  instructions_stepbystep <- paste0("1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:
+  2. Rscript ~/path/to/your/params.R
+  3. Copy ALL files from ", params$filepath.source, " to ", params$filepath.original, ", using the software of your choice.
+  4. Rscript ", shQuote(file.path(params$filepath.processing, '01_metadata.R')), "
+  5. ", birdnet_venv, "
+  6. ", birdnet_call, "
+  7. Rscript ", shQuote(file.path(params$filepath.processing, '03_visualize_birdnet.R')),"
+  8. Rscript ", shQuote(file.path(params$filepath.processing, '04_update_log.R')))
+} else {
+  instructions_stepbystep <- paste0("1. Edit the file params.R with any text editor and specify the file paths. Then close the file and execute it with the next step:
+  2. Rscript ~/path/to/your/params.R
+  3. ", params$copycmd, "
+  4. Rscript ", shQuote(file.path(params$filepath.processing, '01_metadata.R')), "
+  5. ", birdnet_venv, "
+  6. ", birdnet_call, "
+  7. Rscript ", shQuote(file.path(params$filepath.processing, '03_visualize_birdnet.R')),"
+  8. Rscript ", shQuote(file.path(params$filepath.processing, '04_update_log.R')))
+}
+
+
+oneliner <- paste0("Rscript ", shQuote(file.path(params$filepath.processing, '01_metadata.R')), "; ", birdnet_venv, "; ", birdnet_call, "; Rscript ", shQuote(file.path(params$filepath.processing, '03_visualize_birdnet.R')), "; Rscript ", shQuote(file.path(params$filepath.processing, '04_update_log.R')))
 
 instructions_text <- paste(c(instructions_stepbystep, "OneLiner after copying files:", oneliner), collapse = ", ")
 
@@ -148,8 +178,21 @@ pamworkflow::write_log(params, filepath.logfile)
 
 writeLines(text = instructions_text, con = filepath.instructions)
 
-message(
-  paste0(
+if (is.null(copycmd)){
+final_message <- paste0(
+  "\n\n**********Setup finished**********\n\n",
+  "Now, follow the instructions below (start with step 3):",
+  "\n(Instructions also written to: ",
+  filepath.instructions,"):",
+  "\n\n---------------------------------------------------------\n",
+  instructions_stepbystep,
+  "\n\n---------------------------------------------------------\n",
+  "OneLiner after copying files:\n",
+  oneliner,
+  "\n---------------------------------------------------------"
+)
+} else {
+  final_message <- paste0(
     "\n\n**********Setup finished**********\n\n",
     "Now, follow the instructions below (start with step 3):",
     "\n(Instructions also written to: ",
@@ -157,9 +200,15 @@ message(
     "\n\n---------------------------------------------------------\n",
     instructions_stepbystep,
     "\n\n---------------------------------------------------------\n",
+    "Copy files via:\n",
+    params$copycmd,
+    "\n\n---------------------------------------------------------\n",
     "OneLiner after copying files:\n",
     oneliner,
     "\n---------------------------------------------------------"
   )
-)
+
+}
+
+message(final_message)
 
