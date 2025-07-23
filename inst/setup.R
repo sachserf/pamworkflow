@@ -106,7 +106,8 @@ file.copy(from = system.file("species_list.txt", package = "pamworkflow"),
 ### write birdnet.py
 birdnet_call <- pamworkflow::call_birdnet.py(input = shQuote(params$filepath.original),
                 output = shQuote(params$filepath.birdnet),
-                slist = shQuote(params$filepath.specieslist))
+                slist = shQuote(params$filepath.specieslist),
+                threads = birdnet_threads, batch_size = birdnet_batchsize)
 writeLines(birdnet_call, con = file.path(params$filepath.processing, "02_birdnet.py"))
 
 ### visualize BirdNET

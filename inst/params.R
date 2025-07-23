@@ -19,6 +19,10 @@ filepath.logfile <- "~/path/to/your/project/logfile.tsv"
 ### If you do not want to add a command set "copycmd <- NULL"
 copycmd <- paste("rsync -a --info=progress2", shQuote(filepath.source), shQuote(filepath.target))
 
-### create directories, write log, prepare scripts and instructions for further processing: 
+### BirdNET-specs
+birdnet_threads <- 20
+birdnet_batchsize <- birdnet_threads*2
+
+### create directories, write log, prepare scripts and instructions for further processing:
 source(system.file("setup.R", package = "pamworkflow"))
 
