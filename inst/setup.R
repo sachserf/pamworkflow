@@ -3,7 +3,7 @@ require("magrittr")
 ### normalize paths
 filepath.source <- normalizePath(filepath.source, winslash = "/", mustWork = FALSE)
 filepath.target <- normalizePath(filepath.target, winslash = "/", mustWork = FALSE)
-filepath.logfile <- normalizePath(filepath.logfile, winslash = "/", mustWork = FALSE)
+if (!is.null(filepath.logfile)) filepath.logfile <- normalizePath(filepath.logfile, winslash = "/", mustWork = FALSE)
 
 ################################################################################
 ############################### get_rec_duration ###############################
