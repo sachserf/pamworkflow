@@ -57,6 +57,7 @@ filepath.processing <- pamworkflow::create_dirs(
 filepath.instructions <- file.path(dirname(filepath.original), "instructions.txt")
 
 params <- tibble::tibble(
+  UID = as.integer(NA),
   timestamp = Sys.time(),
   filepath.target = filepath.target,
   filepath.source = filepath.source,
@@ -116,11 +117,6 @@ text_03_visualize_birdnet <- paste0("foo <- utils::read.csv('", file.path(params
                           "pamworkflow::visualize_birdnet(BirdNET_selection_table = file.path(foo$filepath.birdnet, 'BirdNET_SelectionTable.txt'), dirname.target.figures = foo$filepath.figures)")
 writeLines(text = text_03_visualize_birdnet, con = file.path(params$filepath.processing, "03_visualize_birdnet.R"))
 
-### write update_logfile.R
-update_log <-  paste0("pamworkflow::update_logfile(filepath.params = '", params$filepath.params, "', filepath.logfile = '", params$filepath.logfile, "')")
-#update_log <- pamworkflow::update_logfile(filepath.params = params$filepath.params, filepath.logfile =  params$filepath.logfile)
-writeLines(update_log, con = file.path(params$filepath.processing, "04_update_log.R"))
-
 ################################################################################
 ############################# prepare instructions #############################
 ################################################################################
@@ -162,16 +158,21 @@ instructions_text <- paste(c(instructions_stepbystep, "OneLiner after copying fi
 params$processing_oneliner <- oneliner  ### add oneliner to logfile
 
 ################################################################################
+################################ write logfile ################################
+################################################################################
+
+params$UID <- pamworkflow::write_log(params, filepath.logfile)
+
+### write update_logfile.R
+update_log <-  paste0("pamworkflow::update_logfile(UID = '", params$UID, "', filepath.logfile = '", params$filepath.logfile, "')")
+#update_log <- pamworkflow::update_logfile(filepath.params = params$filepath.params, filepath.logfile =  params$filepath.logfile)
+writeLines(update_log, con = file.path(params$filepath.processing, "04_update_log.R"))
+
+################################################################################
 ################################# write params #################################
 ################################################################################
 
 rio::export(params, file = params$filepath.params)
-
-################################################################################
-################################ write logfile ################################
-################################################################################
-
-pamworkflow::write_log(params, filepath.logfile)
 
 ################################################################################
 ############################## write instructions ##############################

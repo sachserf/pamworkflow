@@ -7,7 +7,7 @@ filepath.source <- "/media/user/fs01"
 ### Character. Specify the full file path to the target directory for further processing of the files. The last subdirectory should designate a unique (!) identifier for the location of the device that recorded the audio files.
 filepath.target <- "~/path/to/your/project/SITELOC_ID12"
 
-### Character. Optional. Specify the full file path to a tsv file (tab-separated file) to write a log. If you do not want to write a log file, use: filepath.logfile <- NULL
+### Character. Specify the full file path to a tsv file (tab-separated file) to write a log.
 filepath.logfile <- "~/path/to/your/project/logfile.tsv"
 
 ### Character. Specify the path to your BirdNET installation and the command to enter the virtual environment of your birdnet installation (command depends on operating system)
@@ -21,7 +21,7 @@ birdnet_batchsize <- birdnet_threads*2
 
 ### optionally add a command line command to copy files, where filepath.target is a placeholder that will be automatically adjusted/completed. The command will not be executed but prepared and printed on screen for a faster workflow.
 ### If you do not want to add a command set "copycmd <- NULL"
-copycmd <- paste("rsync -a --info=progress2", shQuote(filepath.source), shQuote(filepath.target))
+copycmd <- paste("rsync -a --info=progress2", shQuote(normalizePath(filepath.source, winslash = "/", mustWork = FALSE)), shQuote(normalizePath(filepath.target, winslash = "/", mustWork = FALSE)))
 
 ### create directories, write log, prepare scripts and instructions for further processing:
 source(system.file("setup.R", package = "pamworkflow"))

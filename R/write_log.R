@@ -10,10 +10,13 @@ write_log <- function(params, filepath.logfile = NULL) {
 
   if(file.exists(filepath.logfile)) {
     logfile <- rio::import(filepath.logfile)
+    UID <- params$UID <- nrow(logfile)+1
     params <- dplyr::bind_rows(logfile, params)
   } else {
     dir.create(dirname(filepath.logfile), recursive = TRUE, showWarnings = FALSE)
+    UID <- params$UID <- 1
   }
-  rio::export(params, filepath.logfile, overwrite = TRUE)
-}
 
+  rio::export(params, filepath.logfile, overwrite = TRUE)
+  return(UID)
+}
