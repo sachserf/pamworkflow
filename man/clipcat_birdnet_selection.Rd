@@ -14,7 +14,7 @@ clipcat_birdnet_selection(
 )
 }
 \arguments{
-\item{df}{Character. Dataframe of a birdnet selection table inclduing the follwing variables: Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, bins, rowuid, `Common Name`.}
+\item{df}{Character. Dataframe of a birdnet selection table inclduing the follwing variables: Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, rowid, `Common Name`.}
 
 \item{output_dir}{Character. Directory for the output.}
 

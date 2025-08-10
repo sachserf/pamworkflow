@@ -1,6 +1,6 @@
 #' Clip and concatenate WAV-files and selection tables
 #'
-#' @param df Character. Dataframe of a birdnet selection table inclduing the follwing variables: Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, bins, rowuid, `Common Name`.
+#' @param df Character. Dataframe of a birdnet selection table inclduing the follwing variables: Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, rowid, `Common Name`.
 #' @param output_dir Character. Directory for the output.
 #' @param sec_before Numeric. Time (in seconds) that should be added to the clipped Audio before the actual snippet of interest.
 #' @param sec_after Numeric. Time (in seconds) that should be added to the clipped Audio after the actual snippet of interest.
@@ -48,13 +48,13 @@ clipcat_birdnet_selection <- function(df, output_dir, sec_before = 5, sec_after 
     dplyr::mutate(sox_cmd = paste0("'|sox ", `Begin Path`, " -p trim ", clip_start, " ", clip_duration, " pad 0", dur_silence, "'")) %>%
     dplyr::ungroup()
 
-  # specify sox commands for each group (bins and BirdNET class/species)
+  # specify sox commands for each group (BirdNET class/species)
   dfsox <- dfsample %>%
-    dplyr::group_by(`Common Name`, bins) %>%
+    dplyr::group_by(`Common Name`) %>%
     dplyr::summarise(sox_call = paste0(sox_cmd, collapse = " "), .groups = 'drop') %>%
     dplyr::mutate(
-      sox_call = paste("sox --combine sequence", sox_call, file.path(output_dir, paste0(gsub(" ", "", `Common Name`), "_", bins * 100, ".WAV"))),
-      seltab = file.path(output_dir, paste0(`Common Name`, "_", bins * 100, ".TXT"))
+      sox_call = paste("sox --combine sequence", sox_call, file.path(output_dir, paste0(gsub(" ", "", `Common Name`), ".WAV"))),
+      seltab = file.path(output_dir, paste0(`Common Name`, ".TXT"))
     )
 
   # correct Begin Time (s) and End Time (s) of the selection tables according to the new clips
