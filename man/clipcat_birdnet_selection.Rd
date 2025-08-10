@@ -7,13 +7,9 @@
 clipcat_birdnet_selection(
   df,
   output_dir,
-  target_species,
-  n_samples = 100,
-  confidence_threshold = 0.6,
   sec_before = 5,
   sec_after = 12,
   birdnet_clip_length = 3,
-  seed = 2354,
   dur_silence = 0.5
 )
 }
@@ -22,19 +18,11 @@ clipcat_birdnet_selection(
 
 \item{output_dir}{Character. Directory for the output.}
 
-\item{target_species}{Character. Specify names of BirdNET classes according to the language of the Common Names of the input selection table. Separate multiple classes via |. The string will be evaluated by grepl i.e. 'owl' will return any class with 'owl' in its name.}
-
-\item{n_samples}{Integer. Number of samples per bin and BirdNET class (Species).}
-
-\item{confidence_threshold}{Numeric. Minimum confidence threshold of the samples.}
-
 \item{sec_before}{Numeric. Time (in seconds) that should be added to the clipped Audio before the actual snippet of interest.}
 
 \item{sec_after}{Numeric. Time (in seconds) that should be added to the clipped Audio after the actual snippet of interest.}
 
 \item{birdnet_clip_length}{Numeric. Clip length of the snippet of interest in seconds.}
-
-\item{seed}{Integer. Set seed for the drawing the samples.}
 
 \item{dur_silence}{Numeric. Time (in seconds) with silence between each clip.}
 }

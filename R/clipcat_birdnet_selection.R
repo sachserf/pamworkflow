@@ -2,18 +2,14 @@
 #'
 #' @param df Character. Dataframe of a birdnet selection table inclduing the follwing variables: Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, bins, rowuid, `Common Name`.
 #' @param output_dir Character. Directory for the output.
-#' @param n_samples Integer. Number of samples per bin and BirdNET class (Species).
-#' @param confidence_threshold Numeric. Minimum confidence threshold of the samples.
 #' @param sec_before Numeric. Time (in seconds) that should be added to the clipped Audio before the actual snippet of interest.
 #' @param sec_after Numeric. Time (in seconds) that should be added to the clipped Audio after the actual snippet of interest.
 #' @param birdnet_clip_length Numeric. Clip length of the snippet of interest in seconds.
-#' @param seed Integer. Set seed for the drawing the samples.
 #' @param dur_silence Numeric. Time (in seconds) with silence between each clip.
-#' @param target_species Character. Specify names of BirdNET classes according to the language of the Common Names of the input selection table. Separate multiple classes via |. The string will be evaluated by grepl i.e. 'owl' will return any class with 'owl' in its name.
 #'
 #' @importFrom magrittr %>%
 #' @export
-clipcat_birdnet_selection <- function(df, output_dir, target_species, n_samples = 100, confidence_threshold = 0.6, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, seed = 2354, dur_silence = 0.5) {
+clipcat_birdnet_selection <- function(df, output_dir, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, dur_silence = 0.5) {
 
   # Create target directory
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
