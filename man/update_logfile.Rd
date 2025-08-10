@@ -4,10 +4,10 @@
 \alias{update_logfile}
 \title{Add current timestamp to logfile}
 \usage{
-update_logfile(filepath.params, filepath.logfile)
+update_logfile(UID, filepath.logfile)
 }
 \arguments{
-\item{filepath.params}{Character. Filepath to params.csv}
+\item{UID}{Integer. Unique Identifier.}
 
 \item{filepath.logfile}{Character. Filepath to logfile.csv}
 }

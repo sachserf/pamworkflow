@@ -13,7 +13,7 @@
 #'
 #' @importFrom magrittr %>%
 #' @export
-clipcat_birdnet_data <- function(df, output_dir, target_species, n_samples = 100, confidence_threshold = 0.6, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, seed = 2354, dur_silence = 0.5) {
+clipcat_birdnet_selection <- function(df, output_dir, target_species, n_samples = 100, confidence_threshold = 0.6, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, seed = 2354, dur_silence = 0.5) {
 
   # Create target directory
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
