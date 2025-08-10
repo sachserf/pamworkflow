@@ -9,81 +9,70 @@
 #'
 #' @importFrom magrittr %>%
 #' @export
-clipcat_birdnet_selection <- function(df, output_dir, sec_before = 5, sec_after = 12, birdnet_clip_length = 3, dur_silence = 0.5) {
+clipcat_birdnet_selection <- function(df, output_dir,
+                                      sec_before = 5,
+                                      sec_after = 12,
+                                      birdnet_clip_length = 3,
+                                      dur_silence = 0.5) {
 
-  # Create target directory
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
   save(df, file = file.path(output_dir, "df_rowuid.RData"))
 
-  # Prepare dfsample
   dfsample <- df %>%
-    dplyr::select(Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, rowid, `Common Name`)
-
-  # add informaton with start+end of clips (the actual clip with additional audio for the context) and beginning of the snippet (BirdNET snippet)
-  max_duration <- max(dfsample$`File Offset (s)`) + birdnet_clip_length
-
-  dfsample <- dfsample %>%
+    dplyr::select(Selection, View, Channel, `Begin Path`, `Begin Time (s)`,
+                  `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`,
+                  Confidence, `File Offset (s)`, rowid, `Common Name`) %>%
     dplyr::mutate(
       clip_start = pmax(`File Offset (s)` - sec_before, 0),
-      snippet_start = `File Offset (s)` - clip_start,
-      clip_end = pmin(`File Offset (s)` + birdnet_clip_length + sec_after, max_duration),
+      snippet_start = `File Offset (s)` - pmax(`File Offset (s)` - sec_before, 0),
+      clip_end = pmin(`File Offset (s)` + birdnet_clip_length + sec_after,
+                      max(`File Offset (s)`) + birdnet_clip_length),
       clip_duration = clip_end - clip_start,
-      label = NA,
-      reference_recording = NA,
-      other_species = NA,
-      comment = NA
+      label = NA_character_,
+      reference_recording = NA_character_,
+      other_species = NA_character_,
+      comment = NA_character_
     )
 
-  # Check if source files exist
+  # Check file existence once
   if (any(!file.exists(dfsample$`Begin Path`))) {
     warning("At least one source file does not exist!")
-    return(NULL)
-  } else {
-    message("All source files exist - continuing process.")
+    return(invisible(NULL))
   }
+  message("All source files exist - continuing process.")
 
-  # prepare a command for sox to each row
+  # Vectorized sox command creation
   dfsample <- dfsample %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(sox_cmd = paste0("'|sox ", `Begin Path`, " -p trim ", clip_start, " ", clip_duration, " pad 0", dur_silence, "'")) %>%
-    dplyr::ungroup()
-
-  # specify sox commands for each group (BirdNET class/species)
-  dfsox <- dfsample %>%
-    dplyr::summarise(sox_call = paste0(sox_cmd, collapse = " "), .groups = 'drop') %>%
     dplyr::mutate(
-      sox_call = paste("sox --combine sequence", sox_call, file.path(output_dir, "result.WAV")),
-      seltab = file.path(output_dir, paste0(`Common Name`, ".TXT"))
+      sox_cmd = paste0("'|sox ", `Begin Path`, " -p trim ",
+                       clip_start, " ", clip_duration,
+                       " pad 0", dur_silence, "'")
     )
 
-  # correct Begin Time (s) and End Time (s) of the selection tables according to the new clips
+  # Create single sox call for all rows
+  sox_call <- paste(
+    "sox --combine sequence",
+    paste(dfsample$sox_cmd, collapse = " "),
+    file.path(output_dir, "result.WAV")
+  )
+
+  # Adjust selection table timings for one combined file
   dfsel <- dfsample %>%
-    dplyr::mutate(seltab = file.path(output_dir, "result.TXT")) %>%
     dplyr::mutate(
-      lagdur = dplyr::lag(clip_duration, n = 1L, default = 0) + dur_silence,
+      lagdur = dplyr::lag(clip_duration, default = 0) + dur_silence,
       `Begin Time (s)` = snippet_start + cumsum(lagdur),
-      `End Time (s)` = `Begin Time (s)` + birdnet_clip_length
+      `End Time (s)` = `Begin Time (s)` + birdnet_clip_length,
+      seltab = file.path(output_dir, "result.TXT")
     ) %>%
     dplyr::select(-lagdur)
 
-  # Write selection tables for each group
-  loopi <- dfsel %>%
-    dplyr::select(seltab) %>%
-    dplyr::distinct() %>%
-    dplyr::arrange(seltab)
+  # Write single selection table
+  rio::export(dplyr::select(dfsel, -sox_cmd, -seltab),
+              file = file.path(output_dir, "result.TXT"))
 
-  for (i in loopi$seltab) {
-    dfsel %>%
-      dplyr::filter(seltab == i) %>%
-      dplyr::select(-seltab, -sox_cmd) %>%
-      rio::export(., file = i)
-  }
-
-  # Run sox commands to write WAVs (one file for each group - same as selection tables)
-  for (i in dfsox$sox_call) {
-    message("Processing: ", i)
-    system(i)
-  }
+  # Run sox command
+  message("Processing: ", sox_call)
+  system(sox_call)
 
   message("Process completed!")
 }
