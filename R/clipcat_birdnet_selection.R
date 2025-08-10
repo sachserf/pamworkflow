@@ -17,7 +17,7 @@ clipcat_birdnet_selection <- function(df, output_dir, sec_before = 5, sec_after 
 
   # Prepare dfsample
   dfsample <- df %>%
-    dplyr::select(Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, bins, rowuid, `Common Name`)
+    dplyr::select(Selection, View, Channel, `Begin Path`, `Begin Time (s)`, `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`, Confidence, `File Offset (s)`, rowid, `Common Name`)
 
   # add informaton with start+end of clips (the actual clip with additional audio for the context) and beginning of the snippet (BirdNET snippet)
   max_duration <- max(dfsample$`File Offset (s)`) + birdnet_clip_length
