@@ -50,24 +50,21 @@ clipcat_birdnet_selection <- function(df, output_dir, sec_before = 5, sec_after 
 
   # specify sox commands for each group (BirdNET class/species)
   dfsox <- dfsample %>%
-    dplyr::group_by(`Common Name`) %>%
     dplyr::summarise(sox_call = paste0(sox_cmd, collapse = " "), .groups = 'drop') %>%
     dplyr::mutate(
-      sox_call = paste("sox --combine sequence", sox_call, file.path(output_dir, paste0(gsub(" ", "", `Common Name`), ".WAV"))),
+      sox_call = paste("sox --combine sequence", sox_call, file.path(output_dir, "result.WAV")),
       seltab = file.path(output_dir, paste0(`Common Name`, ".TXT"))
     )
 
   # correct Begin Time (s) and End Time (s) of the selection tables according to the new clips
   dfsel <- dfsample %>%
-    dplyr::mutate(seltab = file.path(output_dir, paste0(gsub(" ", "", `Common Name`), ".TXT"))) %>%
-    dplyr::group_by(`Common Name`) %>%
+    dplyr::mutate(seltab = file.path(output_dir, "result.TXT")) %>%
     dplyr::mutate(
       lagdur = dplyr::lag(clip_duration, n = 1L, default = 0) + dur_silence,
       `Begin Time (s)` = snippet_start + cumsum(lagdur),
       `End Time (s)` = `Begin Time (s)` + birdnet_clip_length
     ) %>%
-    dplyr::select(-lagdur) %>%
-    dplyr::ungroup()
+    dplyr::select(-lagdur)
 
   # Write selection tables for each group
   loopi <- dfsel %>%
