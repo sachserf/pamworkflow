@@ -9,6 +9,7 @@
 #'
 #' @importFrom magrittr %>%
 #' @export
+
 clipcat_birdnet_selection <- function(df, output_dir,
                                       sec_before = 5,
                                       sec_after = 12,
@@ -18,6 +19,8 @@ clipcat_birdnet_selection <- function(df, output_dir,
   dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
   save(df, file = file.path(output_dir, "df_rowuid.RData"))
 
+  maxdur <- av::av_media_info(df$`Begin Path`[1])$duration
+
   dfsample <- df %>%
     dplyr::select(Selection, View, Channel, `Begin Path`, `Begin Time (s)`,
                   `End Time (s)`, `Low Freq (Hz)`, `High Freq (Hz)`,
@@ -26,7 +29,7 @@ clipcat_birdnet_selection <- function(df, output_dir,
       clip_start = pmax(`File Offset (s)` - sec_before, 0),
       snippet_start = `File Offset (s)` - pmax(`File Offset (s)` - sec_before, 0),
       clip_end = pmin(`File Offset (s)` + birdnet_clip_length + sec_after,
-                      max(`File Offset (s)`) + birdnet_clip_length),
+                      maxdur),
       clip_duration = clip_end - clip_start,
       label = NA_character_,
       reference_recording = NA_character_,
@@ -76,3 +79,4 @@ clipcat_birdnet_selection <- function(df, output_dir,
 
   message("Process completed!")
 }
+
