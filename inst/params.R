@@ -21,7 +21,9 @@ birdnet_batchsize <- birdnet_threads*2
 
 ### optionally add a command line command to copy files, where filepath.target is a placeholder that will be automatically adjusted/completed. The command will not be executed but prepared and printed on screen for a faster workflow.
 ### If you do not want to add a command set "copycmd <- NULL"
-copycmd <- paste("rsync -a --info=progress2", shQuote(normalizePath(filepath.source, winslash = "/", mustWork = FALSE)), shQuote(normalizePath(filepath.target, winslash = "/", mustWork = FALSE)))
+filepath.source.copy <- paste0(normalizePath(filepath.source, winslash = "/", mustWork = FALSE), "/")
+filepath.target.copy <- normalizePath(filepath.target, winslash = "/", mustWork = FALSE)
+copycmd <- paste("rsync -a --info=progress2", shQuote(filepath.source.copy), shQuote(filepath.target.copy))
 
 ### create directories, write log, prepare scripts and instructions for further processing:
 source(system.file("setup.R", package = "pamworkflow"))
